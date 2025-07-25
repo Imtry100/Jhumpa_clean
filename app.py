@@ -12,6 +12,9 @@ from io import BytesIO
 import time
 from werkzeug.utils import secure_filename
 
+import sys
+sys.path.append(os.path.join(os.path.dirname(__file__), 'yolo_flask_app', 'yolov7'))
+
 # YOLOv7 imports (assuming you have the YOLOv7 structure)
 from models.experimental import attempt_load
 from utils.general import non_max_suppression, scale_coords, xyxy2xywh, check_img_size
