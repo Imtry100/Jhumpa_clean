@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Comprehensive Skin Analysis</title>
+
+    <!-- Import professional Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f6f8;
+            color: #333;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 1140px;
+            margin: auto;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            border: 1px solid #e0e0e0;
+        }
+
+        .header {
+            background: linear-gradient(to right, #2c3e50, #4ca1af);
+            color: white;
+            padding: 32px 24px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 1rem;
+            opacity: 0.85;
+        }
+
+        .main-content {
+            padding: 40px 24px;
+        }
+
+        .upload-section {
+            background: #fafafa;
+            border: 2px dashed #cfd8dc;
+            border-radius: 12px;
+            padding: 32px;
+            text-align: center;
+            margin-bottom: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .upload-section:hover,
+        .upload-section.dragover {
+            background-color: #f1faff;
+            border-color: #4ca1af;
+        }
+
+        .upload-icon {
+            font-size: 3.5rem;
+            color: #6c757d;
+            margin-bottom: 16px;
+        }
+
+        .upload-text {
+            font-size: 1.1rem;
+            color: #495057;
+            margin-bottom: 20px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .upload-btn {
+            background-color: #2c3e50;
+            color: white;
+            padding: 12px 28px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .upload-btn:hover {
+            background-color: #34495e;
+        }
+
+        .analyze-btn {
+            background-color: #4ca1af;
+            color: white;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .analyze-btn:hover {
+            background-color: #3988a7;
+        }
+
+        .analyze-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .preview-section {
+            display: none;
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .preview-image {
+            max-width: 240px;
+            border-radius: 12px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+            margin: 20px auto;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 42px;
+            height: 42px;
+            border: 4px solid #eee;
+            border-top-color: #4ca1af;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .results-section {
+            display: none;
+            margin-top: 40px;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .result-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e0e0e0;
+            text-align: center;
+        }
+
+        .result-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+            color: #2c3e50;
+        }
+
+        .result-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .result-confidence {
+            font-size: 0.95rem;
+            color: #666;
+        }
+
+        .pimple-count {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #e74c3c;
+            margin-bottom: 10px;
+        }
+
+        .images-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .image-container {
+            text-align: center;
+        }
+
+        .image-container h4 {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            color: #444;
+        }
+
+        .result-image {
+            max-width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .error-message,
+        .success-message {
+            padding: 12px 20px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .error-message {
+            background: #ffe6e6;
+            color: #d63031;
+            border: 1px solid #ffcccc;
+        }
+
+        .success-message {
+            background: #e8f5e9;
+            color: #27ae60;
+            border: 1px solid #c8e6c9;
+        }
+
+        @media (max-width: 768px) {
+            .images-section {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔬 Comprehensive Skin Analysis</h1>
+            <p>AI-powered skin disease detection, type classification, and pimple analysis</p>
+        </div>
+
+        <div class="main-content">
+            <div class="upload-section" id="uploadSection">
+                <div class="upload-icon">📷</div>
+                <div class="upload-text">
+                    Drag and drop your skin image here or click to browse
+                </div>
+                <input type="file" id="imageInput" class="file-input" accept="image/*" />
+                <button class="upload-btn" onclick="document.getElementById('imageInput').click()">
+                    Choose Image
+                </button>
+            </div>
+
+            <div class="preview-section" id="previewSection">
+                <img id="previewImage" class="preview-image" alt="Preview" />
+                <br />
+                <button class="analyze-btn" id="analyzeBtn" onclick="analyzeImage()">🔍 Analyze Skin</button>
+            </div>
+
+            <div class="error-message" id="errorMessage"></div>
+            <div class="success-message" id="successMessage"></div>
+
+            <div class="loading" id="loadingSection">
+                <div class="spinner"></div>
+                <p>Analyzing your image... This may take a few moments.</p>
+            </div>
+
+            <div class="results-section" id="resultsSection">
+                <h2>Analysis Results</h2>
+
+                <div class="results-grid">
+                    <div class="result-card">
+                        <h3>🦠 Skin Disease</h3>
+                        <div class="result-value" id="diseaseResult">-</div>
+                        <div class="result-confidence" id="diseaseConfidence">-</div>
+                    </div>
+
+                    <div class="result-card">
+                        <h3>🎯 Skin Type</h3>
+                        <div class="result-value" id="typeResult">-</div>
+                        <div class="result-confidence" id="typeConfidence" style="display: none;">-</div>
+                    </div>
+
+                    <div class="result-card">
+                        <h3>🔴 Pimples Detected</h3>
+                        <div class="pimple-count" id="pimpleCount">0</div>
+                        <div class="result-confidence">Total detections</div>
+                    </div>
+                </div>
+
+                <div class="images-section" id="imagesSection">
+                    <div class="image-container">
+                        <h4>Original Image</h4>
+                        <img id="originalImage" class="result-image" alt="Original" />
+                    </div>
+                    <div class="image-container">
+                        <h4>Pimple Detection Results</h4>
+                        <img id="annotatedImage" class="result-image" alt="Annotated" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedFile = null;
+
+        document.getElementById('imageInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                selectedFile = file;
+                previewImage(file);
+            }
+        });
+
+        const uploadSection = document.getElementById('uploadSection');
+        uploadSection.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            uploadSection.classList.add('dragover');
+        });
+
+        uploadSection.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            uploadSection.classList.remove('dragover');
+        });
+
+        uploadSection.addEventListener('drop', function(e) {
+            e.preventDefault();
+            uploadSection.classList.remove('dragover');
+
+            const files = e.dataTransfer.files;
+            if (files.length > 0 && files[0].type.startsWith('image/')) {
+                selectedFile = files[0];
+                previewImage(files[0]);
+                document.getElementById('imageInput').files = files;
+            }
+        });
+
+        function previewImage(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('previewImage').src = e.target.result;
+                document.getElementById('previewSection').style.display = 'block';
+                document.getElementById('analyzeBtn').style.display = 'inline-block';
+                hideMessages();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function analyzeImage() {
+            if (!selectedFile) {
+                showError('Please select an image first.');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('image', selectedFile);
+
+            document.getElementById('loadingSection').style.display = 'block';
+            document.getElementById('analyzeBtn').disabled = true;
+            hideMessages();
+
+            fetch('/analyze', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('loadingSection').style.display = 'none';
+                document.getElementById('analyzeBtn').disabled = false;
+
+                if (data.error) {
+                    showError(data.error);
+                } else {
+                    displayResults(data);
+                    showSuccess('Analysis completed successfully!');
+                }
+            })
+            .catch(error => {
+                document.getElementById('loadingSection').style.display = 'none';
+                document.getElementById('analyzeBtn').disabled = false;
+                showError('An error occurred during analysis. Please try again.');
+                console.error('Error:', error);
+            });
+        }
+
+        function displayResults(data) {
+            document.getElementById('diseaseResult').textContent = data.skin_disease.prediction;
+            document.getElementById('diseaseConfidence').textContent = `Confidence: ${data.skin_disease.confidence}`;
+
+            document.getElementById('typeResult').textContent = data.skin_type.prediction;
+            document.getElementById('typeConfidence').textContent = `Confidence: ${data.skin_type.confidence}`;
+
+            document.getElementById('pimpleCount').textContent = data.pimple_detection.count;
+
+            document.getElementById('originalImage').src = 'data:image/png;base64,' + data.images.original;
+            document.getElementById('annotatedImage').src = 'data:image/png;base64,' + data.images.annotated;
+
+            document.getElementById('resultsSection').style.display = 'block';
+            document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => errorDiv.style.display = 'none', 5000);
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+            setTimeout(() => successDiv.style.display = 'none', 3000);
+        }
+
+        function hideMessages() {
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
