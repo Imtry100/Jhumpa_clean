@@ -43,27 +43,27 @@ class SkinAnalysisModels:
         try:
             # Load Skin Disease Model - UPDATED FOR NEW MODEL
             # Load class_to_idx mapping instead of label encoder
-            self.class_to_idx = joblib.load(r"D:\datasets\Skin disease analysisi model\class_to_idx.pkl")
+            self.class_to_idx = joblib.load(os.path.join('yolo_flask_app', 'class_to_idx.pkl'))
             # Create reverse mapping (index to class name)
             self.idx_to_class = {v: k for k, v in self.class_to_idx.items()}
             
             # Load model with 11 classes (updated from 10)
             self.skin_disease_model = models.efficientnet_v2_s(weights=models.EfficientNet_V2_S_Weights.DEFAULT)
             self.skin_disease_model.classifier[1] = torch.nn.Linear(self.skin_disease_model.classifier[1].in_features, 11)  # Changed from 10 to 11
-            self.skin_disease_model.load_state_dict(torch.load(r"D:\datasets\skin_disease_Refined\best_model_efficientnetv2.pth", map_location=self.device))
+            self.skin_disease_model.load_state_dict(torch.load(os.path.join('yolo_flask_app', 'best_model_efficientnetv2.pth'), map_location=self.device))
             self.skin_disease_model = self.skin_disease_model.to(self.device)
             self.skin_disease_model.eval()
             
             # Load Skin Type Model (unchanged)
-            self.skin_type_le = joblib.load(r"D:\Jhumpa Final\Skin Type\skin_type_label_encoder.pkl")
+            self.skin_type_le = joblib.load(os.path.join('yolo_flask_app', 'skin_type_label_encoder.pkl'))
             self.skin_type_model = models.efficientnet_v2_s(weights=models.EfficientNet_V2_S_Weights.DEFAULT)
             self.skin_type_model.classifier[1] = nn.Linear(self.skin_type_model.classifier[1].in_features, len(self.skin_type_le.classes_))
-            self.skin_type_model.load_state_dict(torch.load(r"D:\Jhumpa Final\Skin Type\best_model_skin_type_efficientnetv2.pth", map_location=self.device))
+            self.skin_type_model.load_state_dict(torch.load(os.path.join('yolo_flask_app', 'best_model_skin_type_efficientnetv2.pth'), map_location=self.device))
             self.skin_type_model = self.skin_type_model.to(self.device)
             self.skin_type_model.eval()
             
             # Load Pimple Detection Model (YOLOv7) (unchanged)
-            self.pimple_weights = r"D:\datasets\Pimples_downloaded\Train_mix\yolov7\runs\train\nb_36_retrain_3_continued2\weights\last.pt"
+            self.pimple_weights = os.path.join('yolo_flask_app','yolov7','runs','train','pipmle_50_fresh20','weights','last.pt')
             self.pimple_model = attempt_load(self.pimple_weights, map_location=self.device)
             self.pimple_model.eval()
             
