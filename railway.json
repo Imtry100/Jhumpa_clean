@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 {
   "build": {
     "buildCommand": "pip install -r requirements.txt"
@@ -6,7 +6,7 @@
   "start": {
     "cmd": "gunicorn app:app"
   }
-=======
+
 {
   "build": {
     "buildCommand": "pip install -r requirements.txt"
@@ -14,5 +14,5 @@
   "start": {
     "cmd": "gunicorn app:app"
   }
->>>>>>> dfec1ab (Rename project folder from models to yolo_flask_app)
+
 }
