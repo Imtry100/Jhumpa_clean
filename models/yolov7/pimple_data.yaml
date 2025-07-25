@@ -1,0 +1,5 @@
+train: D:\datasets\Pimples_downloaded\Train_mix\Training dataset
+val: D:\datasets\Pimples_downloaded\Train_mix\valid
+
+nc: 1
+names: ['pimple']
